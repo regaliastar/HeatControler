@@ -286,9 +286,10 @@ public class MusicProgressBar extends View {
      * result为时间
      */
     private String getTimeText(int progress) {
-        int hour = progress / 60;
-        int minute = progress % 60;
-        String result = (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute;
+//        int hour = progress / 60;
+//        int minute = progress % 60;
+//        String result = (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute;
+        String result = (progress - 50) > 0 ? " " + (progress - 50)+ "℃" : (progress - 50)+ "℃";
         return result;
     }
 
@@ -314,6 +315,15 @@ public class MusicProgressBar extends View {
      */
     public synchronized int getProgress() {
         return progress;
+    }
+
+    public synchronized int getTemperature() {
+        return (progress - 50);
+    }
+
+    public Boolean getDefaultProgress(int progress){
+        this.progress = progress;
+        return true;
     }
 
     /**
