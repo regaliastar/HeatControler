@@ -5,6 +5,11 @@
 
 ## screenshot
 
+### 设置温度
+<p align="left">
+	<img alt="" src="book/1.png"/ width="50%">
+</p>
+
 ## Lincense
 MIT
 
