@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/backgroundColor"
     tools:context="com.example.heatcontroler.Activity.StateActivity">
 
 
@@ -17,21 +18,54 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             app:popupTheme="@style/AppTheme.PopupOverlay">
         </android.support.v7.widget.Toolbar>
 
+        <LinearLayout
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="400dp">
+            <LinearLayout
+                android:layout_marginBottom="20dp"
+                android:id="@+id/item_1"
+                android:layout_marginTop="12dp"
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:src="@drawable/thermometer"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:text="当前温度"
+                    android:textSize="18dp"
+                    android:gravity="center|left"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent" />
+                <TextView
+                    android:id="@+id/temp"
+                    android:layout_marginTop="10dp"
+                    android:text="26℃"
+                    android:textColor="#B22222"
+                    android:textSize="18dp"
+                    android:gravity="center|left"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+            </LinearLayout>
 
-        <Button
-            android:layout_marginTop="380dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            android:gravity="center"
-            android:id="@+id/btn_start"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/btn_start_abc"/>
+            <lecho.lib.hellocharts.view.LineChartView
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
 
     </RelativeLayout>
 

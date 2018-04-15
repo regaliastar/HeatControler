@@ -1,7 +1,9 @@
 # HeatControler
 
 ***
-## feature
+## Dependences
+
+- HelloChart
 
 ## screenshot
 
