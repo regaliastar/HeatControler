@@ -1,5 +1,6 @@
 package com.example.heatcontroler.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,24 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.example.heatcontroler.MusicProgressBar;
 import com.example.heatcontroler.R;
 
-public class SetTempActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-    private Button buttonStart;
-    private MusicProgressBar musicProgressBar;
+public class StateActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_state);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -37,15 +31,6 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        // 自己的设置
-        buttonStart = (Button) findViewById(R.id.btn_start);
-        musicProgressBar= (MusicProgressBar) findViewById(R.id.musicProgressBar);
-        musicProgressBar.setMax(150);
-        musicProgressBar.getDefaultProgress(87);
-
-        buttonStart.setOnClickListener(this);
-
     }
 
     @Override
@@ -55,11 +40,13 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            Intent intent = new Intent(StateActivity.this, SetTempActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_gallery) {
             //state
-            Intent intent = new Intent(SetTempActivity.this, StateActivity.class);
+            Intent intent = new Intent(StateActivity.this, StateActivity.class);
             startActivity(intent);
-            finish();
+
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -70,16 +57,4 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    @Override
-    public void onClick(View view) {
-
-        if (0 != musicProgressBar.getProgress()){
-            //
-            Toast.makeText(this, "您选择了 "+musicProgressBar.getTemperature()+"℃", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "您还没有选择温度", Toast.LENGTH_SHORT).show();
-        }
-    }
 }
-
