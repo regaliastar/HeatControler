@@ -90,7 +90,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
 
         Axis axisY = new Axis();  //Y轴
         axisY.setMaxLabelChars(7); //默认是3，只能看最后三个数字
-        axisY.setName("温度");//y轴标注
+//        axisY.setName("温度");//y轴标注
         axisY.setTextSize(10);//设置字体大小
         axisY.setTextColor(Color.WHITE);
 
