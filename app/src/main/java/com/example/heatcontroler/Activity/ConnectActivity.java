@@ -37,6 +37,21 @@ public class ConnectActivity extends AppCompatActivity {
         apiKey = findViewById(R.id.apiKey);
         apiKey.setText(APIKEY);
         connectBtn = findViewById(R.id.connectBtn);
+        connectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HttpUtil httpUtil = new HttpUtil();
+                httpUtil.setCmdCallBack(new ICallBack() {
+                    @Override
+                    public void postExec(String str) {
+                        String value = QuickToolsUtil.getCmdValue(str);
+                        Log.d(TAG,value);
+                    }
+                });
+                httpUtil.getCmd(APIKEY,DEVICEID);
+            }
+        });
+
         getTempBtn = findViewById(R.id.getTemp);
         getTempBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +69,7 @@ public class ConnectActivity extends AppCompatActivity {
 
             }
         });
+
         setTempBtn = findViewById(R.id.setTemp);
         setTempBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,32 +81,7 @@ public class ConnectActivity extends AppCompatActivity {
             }
         });
     }
-/*
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.connectBtn:
-                Toast.makeText(this, "connectBtn", Toast.LENGTH_SHORT).show();
-                Connecting();
 
-//                Intent intent = new Intent(ConnectActivity.this, StateActivity.class);
-//                startActivity(intent);
-                break;
-            case R.id.getTemp:
-                Toast.makeText(this, "getTemp", Toast.LENGTH_SHORT).show();
-                HttpUtil httpUtil = new HttpUtil();
-                String getContainer = httpUtil.doGet("http://api.heclouds.com/keys");
-                Log.d("getContainer",getContainer);
-                break;
-            case R.id.setTemp:
-                Toast.makeText(this, "setTemp", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Log.d("onClick","default");
-                break;
-        }
-    }
-*/
     private void Connecting(){
 
     }
