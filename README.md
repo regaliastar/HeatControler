@@ -4,6 +4,7 @@
 ## Dependences
 
 - HelloChart
+- Gson
 
 ## screenshot
 
