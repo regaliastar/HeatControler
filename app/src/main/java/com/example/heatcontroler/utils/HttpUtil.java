@@ -16,63 +16,82 @@ import java.net.URL;
  * Created by 艾德米 on 2018/6/1.
  */
 
-public class HttpUtil {
+public class HttpUtil{
     private final String TAG = "网络请求";
     private final String masterKey = "L63i2WDONLZOth1sE=FNXckQG20=";
+    private ICallBack callBack;
 
     public HttpUtil(){
 
     }
 
-    public String doGet(String urlStr){
+    public void setGetTemperatureCallBack(ICallBack callBack) {
+        this.callBack = callBack;
+    }
 
-        URL url = null;
-        HttpURLConnection conn = null;
-        InputStream is = null;
-        ByteArrayOutputStream baos = null;
-        try{
-            url = new URL(urlStr);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(6000);
-            conn.setConnectTimeout(6000);
-            conn.setRequestMethod("GET");
-//            conn.setRequestProperty("accept", "*/*");
-//            conn.setRequestProperty("connection", "Keep-Alive");
-            conn.setRequestProperty("api-key",masterKey);
-            if (conn.getResponseCode() == 200){
-                is = conn.getInputStream();
-                baos = new ByteArrayOutputStream();
-                int len = -1;
-                byte[] buf = new byte[128];
+    /**
+     * 得到温度数据
+     * @param apiKey masterKey
+     * @param deviceId 设备号，在onenet上查看
+     * @param count 查询温度的数量
+     * */
+    public void getTemperature(final String apiKey, final String deviceId, final int count){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url = null;
+                String urlStr = "http://api.heclouds.com/devices/"+deviceId+"/datapoints?limit="+count;
+                Log.d(TAG,"urlStr: "+urlStr);
+                HttpURLConnection conn = null;
+                InputStream is = null;
+                ByteArrayOutputStream baos = null;
+                try{
+                    url = new URL(urlStr);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(6000);
+                    conn.setConnectTimeout(6000);
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("api-key",apiKey);
+                    Log.d(TAG,"stateCode: "+conn.getResponseCode());
+                    conn.connect();
+                    if (conn.getResponseCode() == 200) {
+                        Log.d(TAG, "状态码为200");
+                        is = conn.getInputStream();
+                        baos = new ByteArrayOutputStream();
+                        int len = -1;
+                        byte[] buf = new byte[1024];
 
-                while ((len = is.read(buf)) != -1) {
-                    baos.write(buf, 0, len);
+                        while ((len = is.read(buf)) != -1) {
+                            baos.write(buf, 0, len);
+                            baos.flush();
+                        }
+                        callBack.postExec(baos.toString());
+//                        Log.d(TAG, baos.toString("utf-8"));
+                    }else {
+                        throw new RuntimeException(" responseCode is not 200 ... ");
+                    }
+//          return baos.toString();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally{
+                    try {
+                        if (is != null)
+                            is.close();
+                    } catch (IOException e) {
+                    }
+                    try{
+                        if (baos != null)
+                            baos.close();
+                    }catch (SocketTimeoutException e){
+                        Log.i(TAG, "doGet: "+"网络超时！！！");
+                    }catch (IOException e) {
+                    }
+                    conn.disconnect();
                 }
-                baos.flush();
-                return baos.toString();
-            } else{
-                throw new RuntimeException(" responseCode is not 200 ... ");
+//        return null ;
             }
+        }).start();
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally{
-            try {
-                if (is != null)
-                    is.close();
-            } catch (IOException e) {
-            }
-            try{
-                if (baos != null)
-                    baos.close();
-            }catch (SocketTimeoutException e){
-                Log.i(TAG, "doGet: "+"网络超时！！！");
-            }catch (IOException e) {
-            }
-            conn.disconnect();
-        }
-        Log.d(TAG,"return null");
-        return null ;
     }
 
 
@@ -152,4 +171,6 @@ public class HttpUtil {
         }
         return result;
     }
+
+
 }

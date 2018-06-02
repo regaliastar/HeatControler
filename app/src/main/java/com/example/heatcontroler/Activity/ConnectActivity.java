@@ -11,22 +11,25 @@ import android.widget.Toast;
 
 import com.example.heatcontroler.R;
 import com.example.heatcontroler.utils.HttpUtil;
+import com.example.heatcontroler.utils.ICallBack;
 
 public class ConnectActivity extends AppCompatActivity {
-    EditText productId;
+    EditText deviceId;
     EditText apiKey;
     Button connectBtn;
     Button getTempBtn;
+    final String TAG = "ConnectActivity";
     final String PID = "130185";
     final String APIKEY = "L63i2WDONLZOth1sE=FNXckQG20=";
+    final String DEVICEID = "29568317";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
 
-        productId = (EditText) findViewById(R.id.productId);
-        productId.setText(PID);
+        deviceId = (EditText) findViewById(R.id.deviceId);
+        deviceId.setText(DEVICEID);
         apiKey = findViewById(R.id.apiKey);
         apiKey.setText(APIKEY);
         connectBtn = findViewById(R.id.connectBtn);
@@ -34,10 +37,16 @@ public class ConnectActivity extends AppCompatActivity {
         getTempBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 HttpUtil httpUtil = new HttpUtil();
-                String getContainer = httpUtil.doGet("http://www.baidu.com");   //http://api.heclouds.com/keys
-                Log.d("getContainer"," "+getContainer);
+                int count = 1;
+                httpUtil.setGetTemperatureCallBack(new ICallBack() {
+                    @Override
+                    public void postExec(String str) {
+                        Log.d(TAG,str);
+                    }
+                });
+                httpUtil.getTemperature(APIKEY,DEVICEID,count);
+
             }
         });
     }
