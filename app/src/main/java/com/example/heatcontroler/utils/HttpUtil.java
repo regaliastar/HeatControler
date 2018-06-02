@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -26,6 +27,10 @@ public class HttpUtil{
     }
 
     public void setGetTemperatureCallBack(ICallBack callBack) {
+        this.callBack = callBack;
+    }
+
+    public void setSetTemperatureCallBack(ICallBack callBack){
         this.callBack = callBack;
     }
 
@@ -66,11 +71,10 @@ public class HttpUtil{
                             baos.flush();
                         }
                         callBack.postExec(baos.toString());
-//                        Log.d(TAG, baos.toString("utf-8"));
                     }else {
                         throw new RuntimeException(" responseCode is not 200 ... ");
                     }
-//          return baos.toString();
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }finally{
@@ -88,12 +92,73 @@ public class HttpUtil{
                     }
                     conn.disconnect();
                 }
-//        return null ;
             }
         }).start();
 
     }
 
+    public void setTemperature(final String apiKey, final String deviceId, final String Json){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PrintWriter out = null;
+                BufferedReader in = null;
+                String result = "";
+                try
+                {
+                    String urlStr = "http://api.heclouds.com/devices/"+deviceId+"/datapoints?type=3";
+                    URL realUrl = new URL(urlStr);
+                    // 打开和URL之间的连接
+                    HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+                    // 设置通用的请求属性
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("api-key",apiKey);
+                    conn.setUseCaches(false);
+                    // 发送POST请求必须设置如下两行
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    conn.setReadTimeout(6000);
+                    conn.setConnectTimeout(6000);
+                    if (Json != null && !Json.trim().equals(""))
+                    {
+                        byte[] writebytes = Json.getBytes();
+                        // 设置文件长度
+                        conn.setRequestProperty("Content-Length", String.valueOf(writebytes.length));
+                        OutputStream outwritestream = conn.getOutputStream();
+                        outwritestream.write(Json.getBytes());
+                        outwritestream.flush();
+                        outwritestream.close();
+                    }
+                    // 定义BufferedReader输入流来读取URL的响应
+                    in = new BufferedReader(
+                            new InputStreamReader(conn.getInputStream()));
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        result += line;
+                    }
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                // 使用finally块来关闭输出流、输入流
+                finally
+                {
+                    try
+                    {
+                        if (out != null) {
+                            out.close();
+                        }
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (IOException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
 
     /**
      * 向指定 URL 发送POST方法的请求

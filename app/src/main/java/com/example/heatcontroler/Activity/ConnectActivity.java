@@ -18,6 +18,7 @@ public class ConnectActivity extends AppCompatActivity {
     EditText apiKey;
     Button connectBtn;
     Button getTempBtn;
+    Button setTempBtn;
     final String TAG = "ConnectActivity";
     final String PID = "130185";
     final String APIKEY = "L63i2WDONLZOth1sE=FNXckQG20=";
@@ -47,6 +48,16 @@ public class ConnectActivity extends AppCompatActivity {
                 });
                 httpUtil.getTemperature(APIKEY,DEVICEID,count);
 
+            }
+        });
+        setTempBtn = findViewById(R.id.setTemp);
+        setTempBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String temp = "250";
+                String json = "{'temperature':"+temp+"}";
+                HttpUtil httpUtil = new HttpUtil();
+                httpUtil.setTemperature(APIKEY,DEVICEID,json);
             }
         });
     }
