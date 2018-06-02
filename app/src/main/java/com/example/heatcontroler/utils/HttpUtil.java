@@ -46,7 +46,6 @@ public class HttpUtil{
             public void run() {
                 URL url = null;
                 String urlStr = "http://api.heclouds.com/devices/"+deviceId+"/datapoints?limit="+count;
-                Log.d(TAG,"urlStr: "+urlStr);
                 HttpURLConnection conn = null;
                 InputStream is = null;
                 ByteArrayOutputStream baos = null;
@@ -57,10 +56,8 @@ public class HttpUtil{
                     conn.setConnectTimeout(6000);
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("api-key",apiKey);
-                    Log.d(TAG,"stateCode: "+conn.getResponseCode());
                     conn.connect();
                     if (conn.getResponseCode() == 200) {
-                        Log.d(TAG, "状态码为200");
                         is = conn.getInputStream();
                         baos = new ByteArrayOutputStream();
                         int len = -1;

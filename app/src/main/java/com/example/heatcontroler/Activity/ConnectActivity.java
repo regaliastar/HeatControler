@@ -9,9 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.heatcontroler.Model.TempJsonBean;
 import com.example.heatcontroler.R;
 import com.example.heatcontroler.utils.HttpUtil;
 import com.example.heatcontroler.utils.ICallBack;
+import com.example.heatcontroler.utils.QuickToolsUtil;
+import com.google.gson.Gson;
 
 public class ConnectActivity extends AppCompatActivity {
     EditText deviceId;
@@ -42,8 +45,9 @@ public class ConnectActivity extends AppCompatActivity {
                 int count = 1;
                 httpUtil.setGetTemperatureCallBack(new ICallBack() {
                     @Override
-                    public void postExec(String str) {
-                        Log.d(TAG,str);
+                    public void postExec(String result) {
+                        String value = QuickToolsUtil.getTemperatureValue(result);
+                        Log.d(TAG,value);
                     }
                 });
                 httpUtil.getTemperature(APIKEY,DEVICEID,count);
@@ -54,7 +58,7 @@ public class ConnectActivity extends AppCompatActivity {
         setTempBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String temp = "250";
+                String temp = "25";
                 String json = "{'temperature':"+temp+"}";
                 HttpUtil httpUtil = new HttpUtil();
                 httpUtil.setTemperature(APIKEY,DEVICEID,json);
