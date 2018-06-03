@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.heatcontroler.MainActivity;
 import com.example.heatcontroler.Model.TempJsonBean;
 import com.example.heatcontroler.R;
+import com.example.heatcontroler.utils.AppContext;
 import com.example.heatcontroler.utils.HttpUtil;
 import com.example.heatcontroler.utils.ICallBack;
 import com.example.heatcontroler.utils.QuickToolsUtil;
@@ -32,6 +34,9 @@ public class ConnectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
 
+        // 设置全局变量
+        final AppContext app = new AppContext();
+
         deviceId = (EditText) findViewById(R.id.deviceId);
         deviceId.setText(DEVICEID);
         apiKey = findViewById(R.id.apiKey);
@@ -40,15 +45,10 @@ public class ConnectActivity extends AppCompatActivity {
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HttpUtil httpUtil = new HttpUtil();
-                httpUtil.setCmdCallBack(new ICallBack() {
-                    @Override
-                    public void postExec(String str) {
-                        String value = QuickToolsUtil.getCmdValue(str);
-                        Log.d(TAG,value);
-                    }
-                });
-                httpUtil.getCmd(APIKEY,DEVICEID);
+                app.setAPIKEY(String.valueOf(apiKey.getText()));
+                app.setDEVICEID(String.valueOf(deviceId.getText()));
+
+                startActivity(new Intent(ConnectActivity.this, SetTempActivity.class));
             }
         });
 
