@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent" />
                 <TextView
-                    android:id="@+id/temp"
+                    android:id="@+id/CurrTemp"
                     android:layout_marginTop="10dp"
                     android:text="26℃"
                     android:textColor="#B22222"

@@ -11,6 +11,7 @@ public class AppContext extends Application {
     private static String APIKEY;
     private static String DEVICEID;
     private static String CMDMSG;
+    private static String CurrTemp; //当前温度
 
     public void onCreate() {
         super.onCreate();
@@ -38,5 +39,13 @@ public class AppContext extends Application {
 
     public void setCMDMSG(String CMDMSG) {
         this.CMDMSG = CMDMSG;
+    }
+
+    public static String getCurrTemp() {
+        return CurrTemp;
+    }
+
+    public void setCurrTemp(String currTemp) {
+        CurrTemp = currTemp;
     }
 }

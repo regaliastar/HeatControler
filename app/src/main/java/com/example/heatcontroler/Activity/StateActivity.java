@@ -14,8 +14,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.heatcontroler.R;
+import com.example.heatcontroler.utils.AppContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,8 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
     int[] weather = {19,27,26,27,18,26,18};//图表的数据
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisValues = new ArrayList<AxisValue>();
+
+    private TextView currTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,17 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         getAxisPoints();//获取坐标点
         initLineChart();//初始化
 
+        init();
     }
+
+    /**
+     * 初始化当前温度、图表
+     * */
+    private void init(){
+        currTemp = findViewById(R.id.CurrTemp);
+        currTemp.setText(AppContext.getCurrTemp());
+    }
+
     /**
      * 初始化LineChart的一些设置
      */

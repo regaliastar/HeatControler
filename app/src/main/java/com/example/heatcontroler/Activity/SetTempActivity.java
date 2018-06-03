@@ -28,6 +28,7 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
     private MusicProgressBar musicProgressBar;
     private final String TAG = "设置温度界面";
 
+    final AppContext app = new AppContext();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,10 +50,42 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
         buttonStart = (Button) findViewById(R.id.btn_start);
         musicProgressBar= (MusicProgressBar) findViewById(R.id.musicProgressBar);
         musicProgressBar.setMax(150);
-        musicProgressBar.getDefaultProgress(87);    //37 = 87 - 50
+//        musicProgressBar.getDefaultProgress(87);    //37 = 87 - 50
 
         buttonStart.setOnClickListener(this);
 
+        init();
+
+    }
+
+    /**
+     * 初始化温度、设备状态
+     * */
+    private void init(){
+        setCurrentTemperature();
+        getCmdMsg();
+    }
+
+    private void setCurrentTemperature(){
+        HttpUtil httpUtil = new HttpUtil();
+
+        int count = 1;
+        httpUtil.setGetTemperatureCallBack(new ICallBack() {
+            @Override
+            public void postExec(String result) {
+                int value = Integer.parseInt(QuickToolsUtil.getTemperatureValue(result));
+                if(value < 0 || value > 100){
+                    value = 20;
+                }
+                musicProgressBar.setProgress(value+50);
+                app.setCurrTemp(""+value);
+                Log.d(TAG,""+value);
+            }
+        });
+        httpUtil.getTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),count);
+    }
+
+    private void getCmdMsg(){
         HttpUtil httpUtil = new HttpUtil();
         final AppContext app = new AppContext();
         httpUtil.setCmdCallBack(new ICallBack() {
@@ -64,13 +97,14 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
             }
         });
         httpUtil.getCmd(AppContext.getAPIKEY(),AppContext.getDEVICEID());
+
+        // 延时打印命令信息
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(SetTempActivity.this, ""+AppContext.getCMDMSG(), Toast.LENGTH_SHORT).show();
             }
         },1000);
-
     }
 
     @Override
@@ -102,6 +136,11 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
         if (0 != musicProgressBar.getProgress()){
             //
             Toast.makeText(this, "您选择了 "+musicProgressBar.getTemperature()+"℃", Toast.LENGTH_SHORT).show();
+            HttpUtil httpUtil = new HttpUtil();
+            String json = "{'temperature':"+musicProgressBar.getTemperature()+"}";
+            httpUtil.setTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),json);
+            app.setCurrTemp(""+musicProgressBar.getTemperature());
+
         }else{
             Toast.makeText(this, "您还没有选择温度", Toast.LENGTH_SHORT).show();
         }

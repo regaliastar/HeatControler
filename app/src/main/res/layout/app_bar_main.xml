@@ -41,7 +41,7 @@
             android:layout_marginTop="380dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start"
+            android:text="设 置"
             android:gravity="center"
             android:id="@+id/btn_start"
             android:layout_centerHorizontal="true"
