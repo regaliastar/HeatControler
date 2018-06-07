@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
-            android:text="设备ID"
+            android:text="APIKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
-            android:id="@+id/deviceId"
+            android:id="@+id/apiKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -28,14 +28,22 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
-            android:text="APIKey"
+            android:text="设备ID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
-            android:id="@+id/apiKey"
+            android:id="@+id/deviceId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <CheckBox
+        android:checked="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="记住设备"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/connectBtn"
@@ -44,14 +52,5 @@
         android:layout_height="60dp" />
 
     <!--以下均作为测试！！-->
-    <Button
-        android:id="@+id/getTemp"
-        android:text="得到当前温度"
-        android:layout_width="match_parent"
-        android:layout_height="60dp" />
-    <Button
-        android:id="@+id/setTemp"
-        android:text="设置温度为25度"
-        android:layout_width="match_parent"
-        android:layout_height="60dp" />
+
 </LinearLayout>

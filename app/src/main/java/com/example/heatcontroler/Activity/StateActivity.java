@@ -65,8 +65,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
+        //初始化界面
         init();
     }
 
@@ -81,13 +80,6 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         lineChart = (LineChartView)findViewById(R.id.chart);
         getAxisLables();//获取x轴的标注
         getAxisPoints();//获取坐标点
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                initLineChart();//初始化
-            }
-        },1000);
-//        initLineChart();//初始化
 
     }
 
@@ -112,7 +104,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         Axis axisX = new Axis(); //X轴
         axisX.setHasTiltedLabels(true);
         axisX.setTextColor(Color.WHITE);  //设置字体颜色
-        axisX.setName("最近时间");  //表格名称
+//        axisX.setName("最近时间");  //表格名称
         axisX.setTextSize(10);//设置字体大小
         axisX.setMaxLabelChars(7);  //最多几个X轴坐标
         axisX.setValues(mAxisValues);  //填充X轴的坐标名称
@@ -168,6 +160,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
                     mAxisValues.add(new AxisValue(i).setLabel(time[i]));
                 }
 
+                initLineChart();//初始化
             }
         });
         httpUtil.getTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),dot_number);
