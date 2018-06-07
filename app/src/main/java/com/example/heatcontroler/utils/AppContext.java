@@ -5,6 +5,7 @@ import android.text.Editable;
 
 /**
  * Created by 艾德米 on 2018/6/3.
+ * 用来保存全局变量的类
  */
 
 public class AppContext extends Application {

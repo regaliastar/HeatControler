@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,12 +13,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.heatcontroler.R;
 import com.example.heatcontroler.utils.AppContext;
+import com.example.heatcontroler.utils.HttpUtil;
+import com.example.heatcontroler.utils.ICallBack;
+import com.example.heatcontroler.utils.QuickToolsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +40,10 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 public class StateActivity extends Activity implements NavigationView.OnNavigationItemSelectedListener {
     private LineChartView lineChart;
-    String[] weeks = {"12:00","13:00","14:00","15:00","16:00","17:00","18:00"};//X轴的标注
-    int[] weather = {19,27,26,27,18,26,18};//图表的数据
+    private final int dot_number = 7;   //坐标点的个数
+    private final String TAG = "StateActivity";
+//    String[] weeks = {"12:00","13:00","14:00","15:00","16:00","17:00","18:00"};//X轴的标注
+//    int[] weather = {19,27,26,27,18,26,18};//图表的数据
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisValues = new ArrayList<AxisValue>();
 
@@ -57,11 +65,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // 自己的控件
-        lineChart = (LineChartView)findViewById(R.id.chart);
-        getAxisLables();//获取x轴的标注
-        getAxisPoints();//获取坐标点
-        initLineChart();//初始化
+
 
         init();
     }
@@ -72,6 +76,19 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
     private void init(){
         currTemp = findViewById(R.id.CurrTemp);
         currTemp.setText(AppContext.getCurrTemp());
+
+        // 自己的控件
+        lineChart = (LineChartView)findViewById(R.id.chart);
+        getAxisLables();//获取x轴的标注
+        getAxisPoints();//获取坐标点
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initLineChart();//初始化
+            }
+        },1000);
+//        initLineChart();//初始化
+
     }
 
     /**
@@ -124,18 +141,40 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
      * X 轴的显示
      */
     private void getAxisLables(){
-        for (int i = 0; i < weeks.length; i++) {
-            mAxisValues.add(new AxisValue(i).setLabel(weeks[i]));
-        }
+
+//        for (int i = 0; i < weeks.length; i++) {
+//            mAxisValues.add(new AxisValue(i).setLabel(weeks[i]));
+//        }
     }
 
     /**
      * 图表的每个点的显示
      */
     private void getAxisPoints(){
-        for (int i = 0; i < weather.length; i++) {
-            mPointValues.add(new PointValue(i, weather[i]));
-        }
+        HttpUtil httpUtil = new HttpUtil();
+        httpUtil.setGetTemperatureCallBack(new ICallBack() {
+            @Override
+            public void postExec(String str) {
+                //设置点的值
+                String[] value = QuickToolsUtil.getTemperatureValueArray(str, dot_number);
+                for(int i = 0; i < value.length;i++){
+                    int v = Integer.parseInt(value[i]);
+                    mPointValues.add(new PointValue(i, v));
+                }
+
+                //设置横坐标
+                String[] time = QuickToolsUtil.getTemperatureTimeArray(str, dot_number);
+                for(int i = 0; i < time.length;i++){
+                    mAxisValues.add(new AxisValue(i).setLabel(time[i]));
+                }
+
+            }
+        });
+        httpUtil.getTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),dot_number);
+
+//        for (int i = 0; i < weather.length; i++) {
+//            mPointValues.add(new PointValue(i, weather[i]));
+//        }
     }
 
     @Override
