@@ -148,6 +148,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
             @Override
             public void postExec(String str) {
                 //设置点的值
+                Log.d(TAG,str);
                 String[] value = QuickToolsUtil.getTemperatureValueArray(str, dot_number);
                 for(int i = 0; i < value.length;i++){
                     int v = Integer.parseInt(value[i]);

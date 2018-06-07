@@ -137,7 +137,7 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
             //
             Toast.makeText(this, "您设置了 "+musicProgressBar.getTemperature()+"℃", Toast.LENGTH_SHORT).show();
             HttpUtil httpUtil = new HttpUtil();
-            String json = "{'temperature':"+musicProgressBar.getTemperature()+"}";
+            String json = "{'expectedTemperature':"+musicProgressBar.getTemperature()+"}";
             httpUtil.setTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),json);
             app.setCurrTemp(""+musicProgressBar.getTemperature());
 
