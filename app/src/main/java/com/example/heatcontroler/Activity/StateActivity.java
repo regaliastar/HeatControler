@@ -27,6 +27,7 @@ import com.example.heatcontroler.utils.ICallBack;
 import com.example.heatcontroler.utils.QuickToolsUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,6 +52,8 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
     private List<AxisValue> mAxisValues = new ArrayList<AxisValue>();
 
     private TextView currTemp;
+    private TimerTask task = null;
+    private Timer timer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,26 +72,40 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         navigationView.setNavigationItemSelectedListener(this);
 
         //初始化界面
-
+        currTemp = findViewById(R.id.CurrTemp);
         setTimerTask(); //设置每 12s 更新一次坐标
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelTimerTask();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cancelTimerTask();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setTimerTask();
     }
 
     /**
      * 初始化当前温度、图表
      * */
     private void init(){
-        currTemp = findViewById(R.id.CurrTemp);
         lineChart = (LineChartView)findViewById(R.id.chart);
-
-        currTemp.setText(AppContext.getCurrTemp());
         mPointValues.clear();
         mAxisValues.clear();
         // 自己的控件
         getAxisLables();//获取x轴的标注
         getAxisPoints();//获取坐标点
     }
-
 
     /**
      * 设置定时任务
@@ -106,7 +123,8 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
     };
 
     private void setTimerTask(){
-        TimerTask task = new TimerTask() {
+        cancelTimerTask();
+        task = new TimerTask() {
             @Override
             public void run() {
                 Message message = new Message();
@@ -114,10 +132,20 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
                 mHandler.sendMessage(message);
             }
         };
-        Timer timer = new Timer();
+        timer = new Timer();
         long delay = 0;
         long intervalPeriod = 12 * 1000;
         timer.scheduleAtFixedRate(task, delay, intervalPeriod);
+    }
+    private void cancelTimerTask(){
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
     }
 
     /**
@@ -187,8 +215,10 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
                 //设置点的值
                 Log.d(TAG,str);
                 String[] value = QuickToolsUtil.getTemperatureValueArray(str, dot_number);
-                AppContext app = new AppContext();
+                Log.d(TAG, Arrays.toString(value));
+                final AppContext app = new AppContext();
                 app.setCurrTemp(value[0]);
+                currTemp.setText(AppContext.getCurrTemp());
                 if(checkSame(value)){
                     value[value.length - 1] = (Integer.parseInt(value[value.length - 1]) - 1)+"";
                 }
