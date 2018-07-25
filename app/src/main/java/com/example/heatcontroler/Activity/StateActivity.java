@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +28,8 @@ import com.example.heatcontroler.utils.QuickToolsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
@@ -66,7 +69,9 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
         navigationView.setNavigationItemSelectedListener(this);
 
         //初始化界面
-        init();
+
+        setTimerTask(); //设置每 12s 更新一次坐标
+
     }
 
     /**
@@ -74,13 +79,45 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
      * */
     private void init(){
         currTemp = findViewById(R.id.CurrTemp);
-        currTemp.setText(AppContext.getCurrTemp());
-
-        // 自己的控件
         lineChart = (LineChartView)findViewById(R.id.chart);
+
+        currTemp.setText(AppContext.getCurrTemp());
+        mPointValues.clear();
+        mAxisValues.clear();
+        // 自己的控件
         getAxisLables();//获取x轴的标注
         getAxisPoints();//获取坐标点
+    }
 
+
+    /**
+     * 设置定时任务
+     * */
+    public Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    init();
+                    break;
+            }
+        }
+    };
+
+    private void setTimerTask(){
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = 0;
+                mHandler.sendMessage(message);
+            }
+        };
+        Timer timer = new Timer();
+        long delay = 0;
+        long intervalPeriod = 12 * 1000;
+        timer.scheduleAtFixedRate(task, delay, intervalPeriod);
     }
 
     /**
@@ -150,6 +187,11 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
                 //设置点的值
                 Log.d(TAG,str);
                 String[] value = QuickToolsUtil.getTemperatureValueArray(str, dot_number);
+                AppContext app = new AppContext();
+                app.setCurrTemp(value[0]);
+                if(checkSame(value)){
+                    value[value.length - 1] = (Integer.parseInt(value[value.length - 1]) - 1)+"";
+                }
                 for(int i = 0; i < value.length;i++){
                     int v = Integer.parseInt(value[i]);
                     mPointValues.add(new PointValue(i, v));
@@ -157,6 +199,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
 
                 //设置横坐标
                 String[] time = QuickToolsUtil.getTemperatureTimeArray(str, dot_number);
+
                 for(int i = 0; i < time.length;i++){
                     mAxisValues.add(new AxisValue(i).setLabel(time[i]));
                 }
@@ -169,6 +212,17 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
 //        for (int i = 0; i < weather.length; i++) {
 //            mPointValues.add(new PointValue(i, weather[i]));
 //        }
+    }
+
+    private boolean checkSame(String[] arr){
+        boolean flag = true;
+        for(int i = 0; i < arr.length - 1; i++){
+            if( !arr[i].equals(arr[i+1] )){
+                flag = false;
+            }
+        }
+        Log.d(TAG, "flag: "+flag);
+        return flag;
     }
 
     @Override
