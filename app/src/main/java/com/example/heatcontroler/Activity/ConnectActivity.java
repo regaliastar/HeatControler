@@ -24,7 +24,7 @@ public class ConnectActivity extends AppCompatActivity {
     Button connectBtn;
 
     final String TAG = "ConnectActivity";
-    final String APIKEY = "L63i2WDONLZOth1sE=FNXckQG20=";
+    final String APIKEY = "4cp78=CBjGQnKhtReMCIb4j4gcw=";
     final String DEVICEID = "29568317";
 
     @Override

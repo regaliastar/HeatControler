@@ -15,7 +15,7 @@ public class QuickToolsUtil {
     public static String getTemperatureValue(String json){
         String value = null;
         TempJsonBean tempJsonBean = new Gson().fromJson(json,TempJsonBean.class);
-        value = tempJsonBean.data.datastreams.get(1).datapoints.get(0).value;
+        value = tempJsonBean.data.datastreams.get(0).datapoints.get(0).value;
         return value;
     }
 
@@ -23,9 +23,9 @@ public class QuickToolsUtil {
         String[] value = new String[count];
         List datapoints = null;
         TempJsonBean tempJsonBean = new Gson().fromJson(json,TempJsonBean.class);
-        datapoints = tempJsonBean.data.datastreams.get(1).datapoints;
+        datapoints = tempJsonBean.data.datastreams.get(0).datapoints;
         for(int i = 0; i < datapoints.size(); i++){
-            value[i] = tempJsonBean.data.datastreams.get(1).datapoints.get(i).value;
+            value[i] = tempJsonBean.data.datastreams.get(0).datapoints.get(i).value;
         }
         return value;
     }
@@ -47,6 +47,13 @@ public class QuickToolsUtil {
         String value = null;
         CmdJsonBean cmdJsonBean = new Gson().fromJson(json,CmdJsonBean.class);
         value = cmdJsonBean.error;
+        return value;
+    }
+
+    public static int getCmdNo(String json){
+        int value;
+        CmdJsonBean cmdJsonBean = new Gson().fromJson(json,CmdJsonBean.class);
+        value = cmdJsonBean.errno;
         return value;
     }
 }

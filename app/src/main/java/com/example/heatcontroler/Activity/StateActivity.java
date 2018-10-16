@@ -117,6 +117,8 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
             switch (msg.what) {
                 case 0:
                     init();
+                    final AppContext app = new AppContext();
+                    currTemp.setText(AppContext.getCurrTemp());
                     break;
             }
         }
@@ -199,9 +201,6 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
      */
     private void getAxisLables(){
 
-//        for (int i = 0; i < weeks.length; i++) {
-//            mAxisValues.add(new AxisValue(i).setLabel(weeks[i]));
-//        }
     }
 
     /**
@@ -218,7 +217,7 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
                 Log.d(TAG, Arrays.toString(value));
                 final AppContext app = new AppContext();
                 app.setCurrTemp(value[0]);
-                currTemp.setText(AppContext.getCurrTemp());
+//                currTemp.setText(AppContext.getCurrTemp());
                 if(checkSame(value)){
                     value[value.length - 1] = (Integer.parseInt(value[value.length - 1]) - 1)+"";
                 }

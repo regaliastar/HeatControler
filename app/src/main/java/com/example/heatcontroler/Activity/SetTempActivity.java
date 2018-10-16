@@ -2,6 +2,7 @@ package com.example.heatcontroler.Activity;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -77,11 +78,13 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
                 if(value < 0 || value > 100){
                     value = 20;
                 }
+                Log.d(TAG,"当前温度: "+value);
                 musicProgressBar.setProgress(value+50);
                 app.setCurrTemp(""+value);
-                Log.d(TAG,""+value);
+
             }
         });
+        Log.d(TAG, "apiKey:"+AppContext.getAPIKEY());
         httpUtil.getTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),count);
     }
 
@@ -92,19 +95,14 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
             @Override
             public void postExec(String str) {
                 String value = QuickToolsUtil.getCmdValue(str);
+                Looper.prepare();
+                Toast.makeText(SetTempActivity.this, ""+AppContext.getCMDMSG(), Toast.LENGTH_SHORT).show();
+                Looper.loop();
                 app.setCMDMSG(value);
                 Log.d(TAG,value);
             }
         });
         httpUtil.getCmd(AppContext.getAPIKEY(),AppContext.getDEVICEID());
-
-        // 延时打印命令信息
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(SetTempActivity.this, ""+AppContext.getCMDMSG(), Toast.LENGTH_SHORT).show();
-            }
-        },1000);
     }
 
     @Override
@@ -134,12 +132,25 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
     public void onClick(View view) {
 
         if (0 != musicProgressBar.getProgress()){
-            //
-            Toast.makeText(this, "您设置了 "+musicProgressBar.getTemperature()+"℃", Toast.LENGTH_SHORT).show();
             HttpUtil httpUtil = new HttpUtil();
-            String json = "{'expectedTemperature':"+musicProgressBar.getTemperature()+"}";
-            httpUtil.setTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),json);
-            app.setCurrTemp(""+musicProgressBar.getTemperature());
+            String tempVal = ""+musicProgressBar.getTemperature();
+            httpUtil.setSetTemperatureCallBack(new ICallBack() {
+                @Override
+                public void postExec(String str) {
+                    int CmdNo = QuickToolsUtil.getCmdNo(str);
+                    Looper.prepare();
+                    if(CmdNo == 0){
+                        Toast.makeText(SetTempActivity.this, "您设置了 "+musicProgressBar.getTemperature()+"℃", Toast.LENGTH_SHORT).show();
+                        app.setCurrTemp(""+musicProgressBar.getTemperature());
+                    } else {
+                        Toast.makeText(SetTempActivity.this, "设备不在线，请重试", Toast.LENGTH_SHORT).show();
+                    }
+                    Looper.loop();
+                    Log.d(TAG, "CmdNo: "+CmdNo);
+                }
+            });
+            httpUtil.setTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),tempVal);
+
 
         }else{
             Toast.makeText(this, "您还没有选择温度", Toast.LENGTH_SHORT).show();
