@@ -63,8 +63,8 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
      * 初始化温度、设备状态
      * */
     private void init(){
-        setCurrentTemperature();
         getCmdMsg();
+        setCurrentTemperature();
     }
 
     private void setCurrentTemperature(){
@@ -84,7 +84,6 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
 
             }
         });
-        Log.d(TAG, "apiKey:"+AppContext.getAPIKEY());
         httpUtil.getTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),count);
     }
 
@@ -94,12 +93,15 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
         httpUtil.setCmdCallBack(new ICallBack() {
             @Override
             public void postExec(String str) {
-                String value = QuickToolsUtil.getCmdValue(str);
+                int CmdNo = QuickToolsUtil.getCmdNo(str);
                 Looper.prepare();
-                Toast.makeText(SetTempActivity.this, ""+AppContext.getCMDMSG(), Toast.LENGTH_SHORT).show();
+                if(CmdNo == 0){
+                    Toast.makeText(SetTempActivity.this, "连接成功！", Toast.LENGTH_SHORT).show();
+                    app.setCurrTemp(""+musicProgressBar.getTemperature());
+                } else {
+                    Toast.makeText(SetTempActivity.this, "当前设备不在线", Toast.LENGTH_SHORT).show();
+                }
                 Looper.loop();
-                app.setCMDMSG(value);
-                Log.d(TAG,value);
             }
         });
         httpUtil.getCmd(AppContext.getAPIKEY(),AppContext.getDEVICEID());
@@ -118,8 +120,10 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_share) {
+            // 关于
 
         } else if (id == R.id.nav_send) {
+            // 反馈
 
         }
 

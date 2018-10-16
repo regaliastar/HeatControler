@@ -98,55 +98,18 @@ public class HttpUtil{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                URL url = null;
-                String urlStr = "http://api.heclouds.com/cmds?device_id="+deviceId;
-                HttpURLConnection conn = null;
-                InputStream is = null;
-                ByteArrayOutputStream baos = null;
-                String Json = "{}";
-                try{
-                    url = new URL(urlStr);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.setReadTimeout(6000);
-                    conn.setConnectTimeout(6000);
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("api-key",apiKey);
-                    OutputStream outwritestream = conn.getOutputStream();
-                    outwritestream.write(Json.getBytes());
-                    outwritestream.flush();
-                    outwritestream.close();
-
-                    if (conn.getResponseCode() == 200) {
-                        is = conn.getInputStream();
-                        baos = new ByteArrayOutputStream();
-                        int len = -1;
-                        byte[] buf = new byte[1024];
-
-                        while ((len = is.read(buf)) != -1) {
-                            baos.write(buf, 0, len);
-                            baos.flush();
-                        }
-                        callBack.postExec(baos.toString());
-                    }else {
-                        throw new RuntimeException(" responseCode is not 200 ... ");
-                    }
-
-                }catch (Exception e){
+                String url = "http://api.heclouds.com/cmds?device_id="+deviceId;
+                try {
+                    Document doc = Jsoup.connect(url)
+                            .ignoreContentType(true)
+                            .header("api-key", apiKey)
+                            .data("n","1531")   // 没有意义，随便设的
+                            .post();
+                    String docs = doc.getElementsByTag("body").html();
+                    Log.d(TAG, "docs: "+docs);
+                    callBack.postExec(docs);
+                } catch (IOException e) {
                     e.printStackTrace();
-                }finally{
-                    try {
-                        if (is != null)
-                            is.close();
-                    } catch (IOException e) {
-                    }
-                    try{
-                        if (baos != null)
-                            baos.close();
-                    }catch (SocketTimeoutException e){
-                        Log.i(TAG, "doGet: "+"网络超时！！！");
-                    }catch (IOException e) {
-                    }
-                    conn.disconnect();
                 }
             }
         }).start();
