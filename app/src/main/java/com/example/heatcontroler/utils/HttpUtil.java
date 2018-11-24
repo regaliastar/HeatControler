@@ -81,7 +81,7 @@ public class HttpUtil{
                     Document doc = Jsoup.connect(url)
                             .ignoreContentType(true)
                             .header("api-key", apiKey)
-                            .data("0",tempVal)
+                            .data("0", tempVal)
                             .post();
                     String docs = doc.getElementsByTag("body").html();
                     Log.d(TAG, "docs: "+docs);

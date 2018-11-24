@@ -104,7 +104,7 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
                 Looper.loop();
             }
         });
-        httpUtil.getCmd(AppContext.getAPIKEY(),AppContext.getDEVICEID());
+//        httpUtil.getCmd(AppContext.getAPIKEY(),AppContext.getDEVICEID());
     }
 
     @Override

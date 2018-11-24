@@ -15,7 +15,7 @@ public class QuickToolsUtil {
     public static String getTemperatureValue(String json){
         String value = null;
         TempJsonBean tempJsonBean = new Gson().fromJson(json,TempJsonBean.class);
-        value = tempJsonBean.data.datastreams.get(0).datapoints.get(0).value;
+        value = tempJsonBean.data.datastreams.get(2).datapoints.get(0).value;   //datastreams.get(0) 表示exceptedTemperature
         return value;
     }
 
@@ -25,7 +25,7 @@ public class QuickToolsUtil {
         TempJsonBean tempJsonBean = new Gson().fromJson(json,TempJsonBean.class);
         datapoints = tempJsonBean.data.datastreams.get(0).datapoints;
         for(int i = 0; i < datapoints.size(); i++){
-            value[i] = tempJsonBean.data.datastreams.get(0).datapoints.get(i).value;
+            value[i] = tempJsonBean.data.datastreams.get(2).datapoints.get(i).value;    //datastreams.get(0) 表示exceptedTemperature
         }
         return value;
     }
@@ -34,11 +34,11 @@ public class QuickToolsUtil {
         String[] value = new String[count];
         List datapoints = null;
         TempJsonBean tempJsonBean = new Gson().fromJson(json,TempJsonBean.class);
-        datapoints = tempJsonBean.data.datastreams.get(1).datapoints;
+        datapoints = tempJsonBean.data.datastreams.get(2).datapoints;
         for(int i = 0; i < datapoints.size(); i++){
             String temp = null;
-            temp = tempJsonBean.data.datastreams.get(1).datapoints.get(i).at;
-            value[i] = temp.substring(0,temp.length() - 4);
+            temp = tempJsonBean.data.datastreams.get(2).datapoints.get(i).at;
+            value[i] = temp.substring(temp.length() - 12,temp.length()-7);
         }
         return value;
     }
