@@ -263,15 +263,16 @@ public class StateActivity extends Activity implements NavigationView.OnNavigati
             // Handle the camera action
             Intent intent = new Intent(StateActivity.this, SetTempActivity.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.nav_gallery) {
             //state
             Intent intent = new Intent(StateActivity.this, StateActivity.class);
             startActivity(intent);
+            finish();
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            Intent intent = new Intent(StateActivity.this, AboutActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

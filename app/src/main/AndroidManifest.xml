@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.heatcontroler">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -15,11 +16,8 @@
         <activity
             android:name=".Activity.SetTempActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity.StateActivity" />
-
         <activity android:name=".Activity.ConnectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activity.AboutActivity"
+            android:label="关于"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activity.HistoryActivity"></activity>
     </application>
 
 </manifest>

@@ -1,8 +1,11 @@
 package com.example.heatcontroler.Activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -121,9 +124,8 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
             finish();
         } else if (id == R.id.nav_share) {
             // 关于
-
-        } else if (id == R.id.nav_send) {
-            // 反馈
+            Intent intent = new Intent(SetTempActivity.this, AboutActivity.class);
+            startActivity(intent);
 
         }
 
@@ -134,7 +136,7 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
 
     @Override
     public void onClick(View view) {
-
+        final AppCompatActivity _self = this;
         if (0 != musicProgressBar.getProgress()){
             HttpUtil httpUtil = new HttpUtil();
             String tempVal = ""+musicProgressBar.getTemperature();
@@ -144,6 +146,10 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
                     int CmdNo = QuickToolsUtil.getCmdNo(str);
                     Looper.prepare();
                     if(CmdNo == 0){
+                        //实现振动
+                        Vibrator vibrator = (Vibrator)_self.getSystemService(_self.VIBRATOR_SERVICE);
+                        vibrator.vibrate(200);
+
                         Toast.makeText(SetTempActivity.this, "您设置了 "+musicProgressBar.getTemperature()+"℃", Toast.LENGTH_SHORT).show();
                         app.setCurrTemp(""+musicProgressBar.getTemperature());
                     } else {
@@ -154,7 +160,6 @@ public class SetTempActivity extends AppCompatActivity implements NavigationView
                 }
             });
             httpUtil.setTemperature(AppContext.getAPIKEY(),AppContext.getDEVICEID(),tempVal);
-
 
         }else{
             Toast.makeText(this, "您还没有选择温度", Toast.LENGTH_SHORT).show();
